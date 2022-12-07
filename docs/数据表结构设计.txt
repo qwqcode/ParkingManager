@@ -1,0 +1,94 @@
+# 1、用户
+users:
+  - id         # 用户 ID
+  - phone      # 手机号
+  - password   # 密码
+  - openid     # 微信 OpenID
+  - birthday   # 生日
+  - gender     # 性别
+  - credit     # 积分
+  - amount     # 账户可用金额
+  - role       # 角色 (10=普通用户、20=管理员)
+  - status     # 状态 (1=正常、0=禁用)
+  - created_at
+  - updated_at
+
+# 2、用户会员卡
+vip_cards:
+  - id      # 会员卡 ID
+  - expire  # 有效期 (日期)
+  - type    # 会员卡类型 (1=普卡、2=金卡)
+  - user_id # 用户 ID
+
+# 3、车辆
+cars:
+  - id         # 车辆 ID
+  - plate      # 车牌号
+  - plate_type # 车牌类型 (颜色)
+  - user_id    # 用户 ID (0=未绑定到用户的车辆)
+
+# 4、停车记录
+recs:
+  - id      # 停车记录 ID
+  - car_id  # 车辆 ID
+  - park_id # 停车场 ID
+  - in_at   # 驶入停车场时间
+  - out_at  # 驶出停车场时间
+
+# 5、停车缴费记录
+rec_pays:
+  - id              # 缴费记录 ID
+  - car_id          # 车辆 ID
+  - rec_id          # 停车记录 ID
+  - park_id         # 停车场 ID
+  - price           # 缴费金额
+  - use_ticket_id   # 使用的小票 ID
+  - use_coupon_id   # 使用优惠券 ID
+  - is_use_vip_card # 是否使用 VIP 卡支付
+
+# 6、小票
+tickets:
+  - id           # 小票 ID
+  - ticket_key   # 小票密钥（用于生成二维码）
+  - preset_id    # 小票预设 ID
+  - park_id      # 停车场 ID (0=可用于任何停车场)
+  - is_available # 是否有效
+
+# 7、小票预设
+ticket_presets:
+  - id           # 小票预设 ID
+  - cond         # 判断条件类型
+  - cond_val     # 条件满足值
+  - act          # 执行操作类型 (monthly, discount, price-de)
+  - act_val      # 执行操作值
+  - is_available # 是否有效 (0 让所有使用该预设的小票失效，且无法使用该预设)
+
+# 8、优惠券
+coupons:
+  - id           # 优惠券 ID
+  - de_price     # 减免金额
+  - user_id      # 用户 ID
+  - is_available # 是否有效
+
+# 9、停车场
+parks:
+  - id       # 停车场 ID
+  - addr     # 停车场地址
+  - capacity # 车位数量
+  - open_at  # 开放时间
+  - close_at # 关闭时间
+  - status   # 当前状态 (0=关闭、1=正常)
+
+# 10、系统日志
+logs:
+  - id         # 日志 ID
+  - type       # 日志类型
+  - content    # 日记内容
+  - user_id    # 用户 ID
+  - created_at # 创建时间
+
+# 11、用户收藏停车场
+user_parks:
+  - user_id
+  - park_id
+
