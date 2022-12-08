@@ -3,6 +3,9 @@ package com.qwqcode.parkingmanager.entity;
 import java.util.Date;
 
 public class VipCard {
+    public static final int TYPE_NORMAL_VIP = 1; // 普卡
+    public static final int TYPE_GOLD_VIP   = 2; // 金卡
+
     private int id;
     private Date expire;
     private int type;
