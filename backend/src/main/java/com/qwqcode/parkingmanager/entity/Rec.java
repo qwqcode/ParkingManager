@@ -13,6 +13,8 @@ public class Rec {
 
     private Date updated_at;
 
+    private int rec_pay_id;
+
     public int getId() {
         return id;
     }
@@ -67,5 +69,13 @@ public class Rec {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public int getRec_pay_id() {
+        return rec_pay_id;
+    }
+
+    public void setRec_pay_id(int rec_pay_id) {
+        this.rec_pay_id = rec_pay_id;
     }
 }

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -21,6 +22,9 @@ public class UserController {
 
     @Autowired
     private RecService recService;
+
+    @Autowired
+    private TicketService ticketService;
 
     @PostMapping("/api/login")
     public CommonResp userLogin(UserLoginParams params, HttpServletRequest req) {
@@ -134,5 +138,101 @@ public class UserController {
         resp.setTotal(total);
 
         return CommonResp.Data(resp);
+    }
+
+    /**
+     * 车辆信息查询
+     */
+    @PostMapping("/api/user/car-query")
+    public CommonResp carQuery(HttpServletRequest req, UserCarQueryParams params) {
+        Car car;
+        if (params.getCar_plate() != null && !params.getCar_plate().equals("")) {
+            car = carService.findCarByInfo(params.getCar_plate());
+        } else {
+            car = carService.findCarByID(params.getCar_id());
+        }
+
+        if (car == null) {
+            return CommonResp.Error("无车辆数据");
+        }
+
+        CarQueryResp resp = new CarQueryResp();
+        resp.setCar(car);
+
+        return CommonResp.Data(resp);
+    }
+
+    /**
+     * 指定车辆停车记录查询
+     */
+    @PostMapping("/api/user/car-recs")
+    public CommonResp carRecs(HttpServletRequest req, UserCarRecsParams params) {
+        List<Rec> recList = recService.findCarRecs(params.getCar_id(), params.getOffset(), params.getLimit());
+        int total = recService.countCarRecs(params.getCar_id());
+
+        CarRecsResp resp = new CarRecsResp();
+        resp.setRecs(recList);
+        resp.setTotal(total);
+
+        return CommonResp.Data(resp);
+    }
+
+    /**
+     * 用户停车缴费
+     */
+    @PostMapping("/api/user/rec-pay")
+    public CommonResp recPay(HttpServletRequest req, UserRecPayParams params) {
+        Rec rec = recService.findRecByID(params.getRec_id());
+        if (rec == null) {
+            return CommonResp.Error("找不到停车记录");
+        }
+
+        // 计算需支付金额
+
+        // 停车时长计算
+
+
+        BigDecimal price = BigDecimal.valueOf(0.00);
+
+        if (params.getIs_challenge() == 1) {
+            return CommonResp.Data(price);
+        }
+
+        // 小票
+        int use_ticket_id = 0;
+        if (params.getTicket_key() != null && !params.getTicket_key().equals("")) {
+            Ticket ticket = ticketService.findTicketByKey(params.getTicket_key());
+            if (ticket == null) {
+                return CommonResp.Error("小票无效");
+            }
+            use_ticket_id = ticket.getId();
+        }
+
+        // 用户代金劵 (TODO)
+        int use_coupon_id = 0;
+
+        // 用户余额支付
+        int is_use_vip_card = 0;
+
+        // 支付记录新增
+        RecPay pay = new RecPay();
+
+        pay.setCar_id(rec.getCar_id());
+        pay.setRec_id(rec.getId());
+        pay.setPark_id(rec.getPark_id());
+        pay.setPrice(price);
+        pay.setUse_ticket_id(use_ticket_id);
+        pay.setUse_coupon_id(use_coupon_id);
+        pay.setIs_use_vip_card(is_use_vip_card);
+
+        if (!recService.createRecPay(pay)) {
+            return CommonResp.Error("支付失败");
+        }
+
+        if (recService.updateRecPayID(rec, pay)) {
+            return CommonResp.Success("支付成功");
+        } else {
+            return CommonResp.Error("缴费成功，但是缴费状态修改失败");
+        }
     }
 }

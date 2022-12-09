@@ -29,11 +29,12 @@ cars:
 
 # 4、停车记录
 recs:
-  - id      # 停车记录 ID
-  - car_id  # 车辆 ID
-  - park_id # 停车场 ID
-  - in_at   # 驶入停车场时间
-  - out_at  # 驶出停车场时间
+  - id         # 停车记录 ID
+  - car_id     # 车辆 ID
+  - park_id    # 停车场 ID
+  - in_at      # 驶入停车场时间
+  - out_at     # 驶出停车场时间
+  - rec_pay_id # 缴费记录 ID (0=未缴费)
 
 # 5、停车缴费记录
 rec_pays:
@@ -92,3 +93,7 @@ user_parks:
   - user_id
   - park_id
 
+# 12、系统配置
+options:
+  - name
+  - value
