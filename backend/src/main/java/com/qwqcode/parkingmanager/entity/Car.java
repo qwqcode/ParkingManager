@@ -1,6 +1,9 @@
 package com.qwqcode.parkingmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
+import java.util.List;
 
 public class Car {
     private int id;
@@ -11,6 +14,9 @@ public class Car {
     private Date created_at;
 
     private Date updated_at;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Rec> recs;
 
     public int getId() {
         return id;
@@ -58,5 +64,13 @@ public class Car {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public List<Rec> getRecs() {
+        return recs;
+    }
+
+    public void setRecs(List<Rec> recs) {
+        this.recs = recs;
     }
 }

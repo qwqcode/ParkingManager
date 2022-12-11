@@ -1,3 +1,3 @@
 export default {
-  navigationBarTitleText: '缴费'
+  navigationBarTitleText: '停车缴费'
 }

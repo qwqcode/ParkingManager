@@ -27,20 +27,20 @@ public interface RecMapper {
     @Select("SELECT * FROM `recs` WHERE `car_id` = #{car_id} AND `out_at` IS NULL ORDER BY `created_at` DESC LIMIT 1")
     Rec findLatestRecByCarID(@Param("car_id") int car_id);
 
-    @Select("SELECT * FROM `recs` LIMIT #{offset},#{limit} ORDER BY `created_at` DESC")
+    @Select("SELECT * FROM `recs` ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
     List<Rec> findAllRecs(@Param("offset") int offset, @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) FROM `recs`")
     int countAllRecs();
 
-    @Select("SELECT * FROM `recs` WHERE `user_id` = #{user_id} LIMIT #{offset},#{limit} ORDER BY `created_at` DESC")
-    List<Rec> findUserRecs(@Param("user_id") int user_id, @Param("offset") int offset, @Param("limit") int limit);
+    @Select("SELECT * FROM `recs` WHERE `car_id` IN (#{car_ids}) ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
+    List<Rec> findRecsByCarIDs(@Param("car_ids") int[] car_ids, @Param("offset") int offset, @Param("limit") int limit);
 
-    @Select("SELECT COUNT(*) FROM `recs` WHERE `user_id` = #{user_id}")
-    int countUserRecs(@Param("user_id") int user_id);
+    @Select("SELECT * FROM `recs` WHERE `car_id` = #{car_id} ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
+    List<Rec> findCarRecsPagination(@Param("car_id") int car_id, @Param("offset") int offset, @Param("limit") int limit);
 
-    @Select("SELECT * FROM `recs` WHERE `car_id` = #{car_id} LIMIT #{offset},#{limit} ORDER BY `created_at` DESC")
-    List<Rec> findCarRecs(@Param("car_id") int car_id, @Param("offset") int offset, @Param("limit") int limit);
+    @Select("SELECT * FROM `recs` WHERE `car_id` = #{car_id} ORDER BY `created_at` DESC")
+    List<Rec> findCarRecs(@Param("car_id") int car_id);
 
     @Select("SELECT COUNT(*) FROM `recs` WHERE `car_id` = #{car_id}")
     int countCarRecs(@Param("car_id") int car_id);

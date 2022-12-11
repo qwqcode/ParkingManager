@@ -8,7 +8,8 @@ export const useUserStore = defineStore('user', {
   state: () => {
     return {
         data: null as (t.IUser|null),
-        vip_card: null as (t.IVipCard|null)
+        vip_card: null as (t.IVipCard|null),
+        cars: [] as t.ICar[]
     }
   },
   actions: {
@@ -18,6 +19,10 @@ export const useUserStore = defineStore('user', {
 
     setVipCard(vip_card: t.IVipCard|null) {
       this.vip_card = vip_card
+    },
+
+    setCars(cars: t.ICar[]) {
+      this.cars = cars
     }
   },
   getters: {

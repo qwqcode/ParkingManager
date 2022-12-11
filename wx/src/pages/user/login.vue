@@ -17,7 +17,7 @@
         </view>
 
         <view class="item btn-wrap">
-            <button class="login-btn" @tap="login">登录</button>
+            <button class="login-btn blue-btn" @tap="login">登录</button>
             <view class="signup-note">
                 还没有账号？<text class="signup-btn" @tap="linkToSignup">点击注册</text>
             </view>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import Taro from '@tarojs/taro'
+import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import * as request from '@/lib/request'
@@ -39,6 +40,10 @@ const formData = reactive({
     password: '123456'
 })
 
+onMounted(() => {
+    login()
+})
+
 function login() {
     request.post('/login', {
         phone: formData.phone,
@@ -47,8 +52,11 @@ function login() {
         user.setData(data.user)
         user.setVipCard(data.vip_card)
 
+        // Taro.redirectTo({
+        //     url: '/pages/index/index'
+        // })
         Taro.redirectTo({
-            url: '/pages/index/index'
+            url: '/pages/user/pay'
         })
     })
 }
@@ -101,13 +109,6 @@ function linkToSignup() {
     }
 
     .login-btn {
-        width: 100%;
-        font-size: 32px;
-        color: #fff;
-        background: #2196f3;
-        margin-top: 50px;
-        text-align: center;
-        border-radius: 100px;
     }
 
     .signup-note {

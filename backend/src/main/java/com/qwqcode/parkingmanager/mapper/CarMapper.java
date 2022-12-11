@@ -22,7 +22,7 @@ public interface CarMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int createCar(@Param("car") Car car);
 
-    @Select("SELECT * FROM `cars` LIMIT #{offset},#{limit} ORDER BY `created_at` DESC")
+    @Select("SELECT * FROM `cars` ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
     List<Car> findAllCars(@Param("offset") int offset, @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) `cars`")

@@ -47,19 +47,19 @@ public class RecService {
         return recMapper.countAllRecs();
     }
 
-    /** 获取用户停车记录列表（分页）*/
-    public List<Rec> findUserRecs(int user_id, int offset, int limit) {
-        return recMapper.findUserRecs(user_id, offset, limit);
-    }
-
-    /** 获取用户停车记录总数 */
-    public int countUserRecs(int user_id) {
-        return recMapper.countUserRecs(user_id);
+    /** 获取多辆车的停车记录列表（分页）*/
+    public List<Rec> findRecsByCarIDs(int[] carID, int offset, int limit) {
+        return recMapper.findRecsByCarIDs(carID, offset, limit);
     }
 
     /** 获取指定车辆所有停车记录（分页）*/
-    public List<Rec> findCarRecs(int car_id, int offset, int limit) {
-        return recMapper.findCarRecs(car_id, offset, limit);
+    public List<Rec> findCarRecsPagination(int car_id, int offset, int limit) {
+        return recMapper.findCarRecsPagination(car_id, offset, limit);
+    }
+
+    /** 获取指定车辆所有停车记录（无分页）*/
+    public List<Rec> findCarRecs(int car_id) {
+        return recMapper.findCarRecs(car_id);
     }
 
     /** 获取指定车辆所有停车记录总数 */

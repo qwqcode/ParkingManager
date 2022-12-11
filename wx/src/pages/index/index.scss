@@ -84,13 +84,56 @@
     }
 
     .cars {
+        .cars-desc {
+            padding: 30px 20px;
+            color: #747f84;
+            font-size: 24px;
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        .car-item {
+            position: relative;
+            padding: 40px 40px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f4f4f4;
+
+            .car-plate {
+                font-size: 33px;
+            }
+
+            .car-status {
+                position: absolute;
+                right: 10px;
+                top: 20px;
+                margin-top: 20px;
+
+                .badge {
+                    &.red {
+                        border-color: #f44336;
+                        color: #f44336;
+                    }
+
+                    border: 1px solid #b0b0b0;
+                    color: #000000;
+                    border-radius: 100px;
+                    padding: 7px 24px;
+                    font-size: 27px;
+                }
+            }
+
+            .details {
+                margin-top: 30px;
+                font-size: 28px;
+            }
+        }
+
         .bind-card-notice {
             padding: 20px;
 
             .text {
                 text-align: center;
-                margin-bottom: 30px;
-                font-size: 28px;
+                margin-top: 20px;
+                font-size: 24px;
             }
         }
 

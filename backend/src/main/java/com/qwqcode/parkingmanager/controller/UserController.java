@@ -5,14 +5,11 @@ import com.qwqcode.parkingmanager.model.req.*;
 import com.qwqcode.parkingmanager.model.res.*;
 import com.qwqcode.parkingmanager.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -103,11 +100,6 @@ public class UserController {
         // 查询用户已绑定车辆
         List<Car> carList = carService.findUserCars(userID);
 
-        boolean isExisted = carList.stream().anyMatch(c -> c.getPlate().equals(params.getCar_plate()));
-        if (isExisted) {
-            return CommonResp.Error("该用户已绑定过该车辆");
-        }
-
         // 普卡 3 辆、金卡 5 辆
         if (vipType == VipCard.TYPE_NORMAL_VIP && carList.size() >= 3) {
             return CommonResp.Error("普卡 VIP 最多只能绑定 3 辆车");
@@ -129,6 +121,10 @@ public class UserController {
             return CommonResp.Success("车辆绑定成功");
         } else {
             // 编辑模式
+            if (car.getUser_id() != 0) {
+                return CommonResp.Error(car.getUser_id() == userID ? "该用户已绑定过该车辆" : "其他用户已绑定该车辆");
+            }
+
             car.setUser_id(userID);
             if (carService.editCarUserID(car.getId(), car.getUser_id())) {
                 return CommonResp.Success("车辆绑定成功");
@@ -148,25 +144,13 @@ public class UserController {
         // 用户绑定车辆不会太多，不用做分页
         List<Car> carList = carService.findUserCars(userID);
 
+        // 查询停车记录
+        for (Car car : carList) {
+            car.setRecs(recService.findCarRecs(car.getId()));
+        }
+
         UserCarsResp resp = new UserCarsResp();
         resp.setCars(carList);
-
-        return CommonResp.Data(resp);
-    }
-
-    /**
-     * 用户停车记录查询
-     */
-    @PostMapping("/api/user/recs")
-    public CommonResp userRecs(HttpServletRequest req, UserRecsParams params) {
-        int userID = ((User)req.getSession().getAttribute("user")).getId();
-
-        List<Rec> recList = recService.findUserRecs(userID, params.getOffset(), params.getLimit());
-        int total = recService.countUserRecs(userID);
-
-        UserRecsResp resp = new UserRecsResp();
-        resp.setRecs(recList);
-        resp.setTotal(total);
 
         return CommonResp.Data(resp);
     }
@@ -187,6 +171,9 @@ public class UserController {
             return CommonResp.Error("无车辆数据");
         }
 
+        // 查询停车记录
+        car.setRecs(recService.findCarRecs(car.getId()));
+
         CarQueryResp resp = new CarQueryResp();
         resp.setCar(car);
 
@@ -198,7 +185,7 @@ public class UserController {
      */
     @PostMapping("/api/user/car-recs")
     public CommonResp carRecs(HttpServletRequest req, UserCarRecsParams params) {
-        List<Rec> recList = recService.findCarRecs(params.getCar_id(), params.getOffset(), params.getLimit());
+        List<Rec> recList = recService.findCarRecsPagination(params.getCar_id(), params.getOffset(), params.getLimit());
         int total = recService.countCarRecs(params.getCar_id());
 
         CarRecsResp resp = new CarRecsResp();
@@ -242,28 +229,9 @@ public class UserController {
         }
 
         // 停车时长计算
-        Date inDate = rec.getIn_at();
-        Date outDate = rec.getOut_at();
+        long minutes = rec.getParking_time();
 
-        long diff = Math.abs(inDate.getTime() - outDate.getTime()); // 计算两个毫秒值之差
-        long minutes = diff / 1000 * 60; // 计算时间长度（单位：分钟）
-        long hours = (long)Math.ceil((double)minutes / 60.0); // 计算小时，向上取整（不满 1 小时按 1 小时来算）
-
-        // 小票小时减免
-        if (ticket_hours_de > 0) {
-            hours -= ticket_hours_de;
-            if (hours < 0) hours = 0;
-        }
-
-        final int PRICE_PER_HOUR = 2; // 每小时收费
-
-        if (minutes <= 30) {
-            // 停车 30 分钟内免费
-            price = BigDecimal.valueOf(0.00);
-        } else {
-            // 按小时计算停车费用
-            price = BigDecimal.valueOf(hours * PRICE_PER_HOUR);
-        }
+        price = rec.getParking_price(ticket_hours_de);
 
         // 接口功能：仅计算价格而不执行支付
         if (params.getIs_challenge() == 1) {

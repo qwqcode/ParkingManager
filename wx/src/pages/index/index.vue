@@ -14,9 +14,30 @@
     </view>
 
     <view class="card cars">
+      <view class="cars-desc">
+        您已绑定共 {{ user.cars.length }} 辆车
+      </view>
+
+      <view v-for="(car) in user.cars" :key="car.id" class="car-item">
+        <view class="car-plate">{{ car.plate }}</view>
+        <view class="car-status">
+          <text v-if="countCarRecsUnpaid(car) > 0" class="badge red">待支付 {{countCarRecsUnpaid(car)}}</text>
+          <text v-else class="badge">无待支付</text>
+        </view>
+        <template v-if="car.recs && car.recs.length > 0">
+        <view v-for="(rec) in [car.recs[0]]" :key="rec.id" class="details">
+          <view>入场：{{utils.getDateFormatted(rec.in_at)}}</view>
+          <view>时长：{{Math.ceil(rec.parking_time / 60)}} 小时</view>
+          <view>出场：{{utils.getDateFormatted(rec.out_at)}}</view>
+          <view>状态：{{ rec.status_text }}</view>
+        </view>
+        </template>
+      </view>
+
       <view class="bind-card-notice">
-        <view class="text">您是普卡会员，最多可以绑定 2 张车牌</view>
-        <view class="car-add-btn">+ 添加车辆</view>
+        <view class="car-add-btn" @tap="linkToCarAdd()">+ 添加车辆</view>
+        <view v-if="user.isGoldVIP" class="text">您是金卡会员，最多可以绑定 5 张车牌</view>
+        <view v-else class="text">您是普卡会员，最多可以绑定 2 张车牌</view>
       </view>
     </view>
 
@@ -35,19 +56,41 @@
 
 <script setup lang="ts">
 import './index.scss'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { onBeforeMount } from 'vue'
 import { useUserStore } from '@/stores/user'
+import * as request from '@/lib/request'
+import * as utils from '@/lib/utils'
+import type * as t from '@/types'
 
 const user = useUserStore()
 
 onBeforeMount(() => {
+  // 用户未登录
   if (!user.data) {
     Taro.redirectTo({
       url: '/pages/user/login'
     })
   }
 })
+
+useDidShow(() => {
+  // 获取绑定的车辆
+  request.post('/user/cars').then(data => {
+    console.log(data.cars)
+    user.setCars(data.cars)
+  })
+})
+
+function linkToCarAdd() {
+  Taro.navigateTo({
+    url: '/pages/user/car-add'
+  })
+}
+
+function countCarRecsUnpaid(car: t.ICar) {
+  return car.recs?.filter(r => r.rec_pay_id == 0).length || 0
+}
 
 const funcList = [{
   name: '缴费记录',

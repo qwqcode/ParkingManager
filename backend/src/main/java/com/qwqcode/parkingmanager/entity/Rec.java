@@ -1,6 +1,10 @@
 package com.qwqcode.parkingmanager.entity;
 
+import com.qwqcode.parkingmanager.common.Utils;
+
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Rec {
     private int id;
@@ -77,5 +81,51 @@ public class Rec {
 
     public void setRec_pay_id(int rec_pay_id) {
         this.rec_pay_id = rec_pay_id;
+    }
+
+    // 获取停车时长（分钟）
+    public long getParking_time() {
+        Date inDate = getIn_at();
+        Date outDate = getOut_at();
+
+        if (inDate == null) return 0;
+        if (outDate == null) outDate = Utils.getNowDate();
+
+        long diff = Math.abs(inDate.getTime() - outDate.getTime()); // 计算两个毫秒值之差
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff); // 计算时间长度（单位：分钟）
+
+        return minutes;
+    }
+
+    // 获取停车费用
+    public BigDecimal getParking_price() {
+        return getParking_price(0);
+    }
+
+    public BigDecimal getParking_price(int de_hours) {
+        final int PRICE_PER_HOUR = 2; // 每小时收费
+
+        long minutes = getParking_time();
+        long hours = (long)Math.ceil((double)minutes / 60.0); // 计算小时，向上取整（不满 1 小时按 1 小时来算）
+
+        if (de_hours > 0) {
+            hours -= de_hours;
+            if (hours < 0) hours = 0;
+        }
+
+        if (minutes <= 30) {
+            // 停车 30 分钟内免费
+            return BigDecimal.valueOf(0.00);
+        } else {
+            // 按小时计算停车费用
+            return BigDecimal.valueOf(hours * PRICE_PER_HOUR);
+        }
+    }
+
+    /**
+     * 当前状态（文本）
+     */
+    public String getStatus_text() {
+        return (out_at == null ? "停泊中" : "已出场") + " " + (rec_pay_id == 0 ? "(未缴费)" : "(已缴费)");
     }
 }
