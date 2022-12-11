@@ -9,6 +9,8 @@ public class Ticket {
     private int park_id;
     private int is_available;
 
+    private int preset_id;
+
     private Date created_at;
 
     private Date updated_at;
@@ -43,6 +45,14 @@ public class Ticket {
 
     public void setIs_available(int is_available) {
         this.is_available = is_available;
+    }
+
+    public int getPreset_id() {
+        return preset_id;
+    }
+
+    public void setPreset_id(int preset_id) {
+        this.preset_id = preset_id;
     }
 
     public Date getCreated_at() {

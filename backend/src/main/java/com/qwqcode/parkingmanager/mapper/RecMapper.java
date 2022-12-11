@@ -46,7 +46,7 @@ public interface RecMapper {
     int countCarRecs(@Param("car_id") int car_id);
 
     @Insert("INSERT INTO `rec_pays` (`car_id`, `rec_id`, `park_id`, `price`, `use_ticket_id`, `use_coupon_id`, `is_use_vip_card`) " +
-            "VALUES (#{p.car_id}, #{p.rec_id}, #{p.park_id}, #{p.price}, #{p.use_ticket_id}, #{p.use_coupon_id, #{p.is_use_vip_card}})")
+            "VALUES (#{p.car_id}, #{p.rec_id}, #{p.park_id}, #{p.price}, #{p.use_ticket_id}, #{p.use_coupon_id}, #{p.is_use_vip_card})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int createRecPay(@Param("p") RecPay rec_pay);
 }

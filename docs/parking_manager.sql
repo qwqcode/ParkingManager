@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： dev-db:3306
--- 生成日期： 2022-12-07 06:38:19
+-- 生成日期： 2022-12-09 07:38:13
 -- 服务器版本： 8.0.30
 -- PHP 版本： 8.0.24
 
@@ -30,10 +30,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `cars` (
   `id` int NOT NULL,
   `plate` varchar(20) NOT NULL,
-  `plate_type` varchar(20) NOT NULL,
-  `user_id` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `plate_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `user_id` int NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -47,8 +47,8 @@ CREATE TABLE `coupons` (
   `de_price` decimal(10,2) NOT NULL,
   `user_id` int NOT NULL,
   `is_available` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -62,8 +62,19 @@ CREATE TABLE `logs` (
   `type` varchar(20) NOT NULL,
   `content` text NOT NULL,
   `user_id` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `options`
+--
+
+CREATE TABLE `options` (
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -76,11 +87,11 @@ CREATE TABLE `parks` (
   `id` int NOT NULL,
   `addr` varchar(20) NOT NULL,
   `capacity` int NOT NULL,
-  `open_at` datetime NOT NULL,
-  `close_at` datetime NOT NULL,
-  `status` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `open_at` time DEFAULT NULL,
+  `close_at` time DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -93,10 +104,11 @@ CREATE TABLE `recs` (
   `id` int NOT NULL,
   `car_id` int NOT NULL,
   `park_id` int NOT NULL,
-  `in_at` datetime NOT NULL,
-  `out_at` datetime NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `in_at` datetime DEFAULT NULL,
+  `out_at` datetime DEFAULT NULL,
+  `rec_pay_id` int NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -110,12 +122,12 @@ CREATE TABLE `rec_pays` (
   `car_id` int NOT NULL,
   `rec_id` int NOT NULL,
   `park_id` int NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `use_ticket_id` int NOT NULL,
-  `use_coupon_id` int NOT NULL,
-  `is_use_vip_card` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `price` decimal(10,2) DEFAULT '0.00',
+  `use_ticket_id` int NOT NULL DEFAULT '0',
+  `use_coupon_id` int NOT NULL DEFAULT '0',
+  `is_use_vip_card` int NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -130,8 +142,8 @@ CREATE TABLE `tickets` (
   `preset_id` int NOT NULL,
   `park_id` int NOT NULL,
   `is_available` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -147,8 +159,8 @@ CREATE TABLE `ticket_presets` (
   `act` varchar(20) NOT NULL,
   `act_val` varchar(20) NOT NULL,
   `is_available` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -161,15 +173,15 @@ CREATE TABLE `users` (
   `id` int NOT NULL,
   `phone` varchar(20) NOT NULL,
   `password` varchar(50) NOT NULL,
-  `openid` varchar(50) NOT NULL,
-  `birthday` date NOT NULL,
-  `gender` varchar(10) NOT NULL,
-  `credit` int NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `role` int NOT NULL,
-  `status` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `openid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `gender` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `credit` int DEFAULT '0',
+  `amount` decimal(10,2) DEFAULT '0.00',
+  `role` int NOT NULL DEFAULT '10',
+  `status` int NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -182,8 +194,8 @@ CREATE TABLE `user_parks` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `park_id` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -197,8 +209,8 @@ CREATE TABLE `vip_cards` (
   `expire` datetime NOT NULL,
   `type` int NOT NULL,
   `user_id` int NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -216,6 +228,12 @@ ALTER TABLE `cars`
 --
 ALTER TABLE `coupons`
   ADD PRIMARY KEY (`id`);
+
+--
+-- 表的索引 `options`
+--
+ALTER TABLE `options`
+  ADD PRIMARY KEY (`name`);
 
 --
 -- 表的索引 `parks`
@@ -251,7 +269,9 @@ ALTER TABLE `ticket_presets`
 -- 表的索引 `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `phone_2` (`phone`),
+  ADD KEY `phone` (`phone`);
 
 --
 -- 表的索引 `user_parks`

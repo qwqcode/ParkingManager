@@ -5,11 +5,14 @@ import com.qwqcode.parkingmanager.model.req.*;
 import com.qwqcode.parkingmanager.model.res.*;
 import com.qwqcode.parkingmanager.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -26,6 +29,9 @@ public class UserController {
     @Autowired
     private TicketService ticketService;
 
+    /**
+     * 用户登录
+     */
     @PostMapping("/api/login")
     public CommonResp userLogin(UserLoginParams params, HttpServletRequest req) {
         User user = userService.checkGetUser(params.getPhone(), params.getPassword());
@@ -34,12 +40,24 @@ public class UserController {
             return CommonResp.Error("登录失败");
         }
 
+        // 查询会员卡
+        VipCard vipCard = userService.findVipCard(user.getId());
+
+        // 设置 Session
         HttpSession httpSession = req.getSession();
         httpSession.setAttribute("user", user);
 
-        return CommonResp.Success("登录成功");
+        // 响应数据
+        UserLoginResp resp = new UserLoginResp();
+        resp.setUser(user);
+        resp.setVip_card(vipCard);
+
+        return CommonResp.Data(resp);
     }
 
+    /**
+     * 用户注册
+     */
     @PostMapping("/api/signup")
     public CommonResp userSignup(UserSignupParams params, HttpServletRequest req) {
         boolean result = userService.signupUser(params.getPhone(), params.getPassword());
@@ -47,6 +65,19 @@ public class UserController {
         else return CommonResp.Error("注册失败");
     }
 
+    /**
+     * 用户注销
+     */
+    @PostMapping("/api/user/logout")
+    public CommonResp userLogout(HttpServletRequest req) {
+        HttpSession httpSession = req.getSession();
+        httpSession.removeAttribute("user");
+        return CommonResp.Success("注销成功");
+    }
+
+    /**
+     * 用户当前信息
+     */
     @PostMapping("/api/user/me")
     public CommonResp userInfo(HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -188,24 +219,55 @@ public class UserController {
         }
 
         // 计算需支付金额
+        BigDecimal price;
 
-        // 停车时长计算
-
-
-        BigDecimal price = BigDecimal.valueOf(0.00);
-
-        if (params.getIs_challenge() == 1) {
-            return CommonResp.Data(price);
-        }
-
-        // 小票
+        // 小票抵扣
         int use_ticket_id = 0;
+        int ticket_hours_de = 0; // 小票小时减免
         if (params.getTicket_key() != null && !params.getTicket_key().equals("")) {
             Ticket ticket = ticketService.findTicketByKey(params.getTicket_key());
-            if (ticket == null) {
+            if (ticket == null || ticket.getIs_available() == 0) {
                 return CommonResp.Error("小票无效");
             }
             use_ticket_id = ticket.getId();
+
+            // 查询小票预设
+            TicketPreset tPreset = ticketService.findTicketPresetByID(ticket.getPreset_id());
+            if (tPreset == null || tPreset.getIs_available() == 0) {
+                return CommonResp.Error("小票预设无效");
+            }
+            if (tPreset.getAct().equals("hours-de")) { // 小票预设类型：小时减免
+                ticket_hours_de = Integer.parseInt(tPreset.getAct_val());
+            }
+        }
+
+        // 停车时长计算
+        Date inDate = rec.getIn_at();
+        Date outDate = rec.getOut_at();
+
+        long diff = Math.abs(inDate.getTime() - outDate.getTime()); // 计算两个毫秒值之差
+        long minutes = diff / 1000 * 60; // 计算时间长度（单位：分钟）
+        long hours = (long)Math.ceil((double)minutes / 60.0); // 计算小时，向上取整（不满 1 小时按 1 小时来算）
+
+        // 小票小时减免
+        if (ticket_hours_de > 0) {
+            hours -= ticket_hours_de;
+            if (hours < 0) hours = 0;
+        }
+
+        final int PRICE_PER_HOUR = 2; // 每小时收费
+
+        if (minutes <= 30) {
+            // 停车 30 分钟内免费
+            price = BigDecimal.valueOf(0.00);
+        } else {
+            // 按小时计算停车费用
+            price = BigDecimal.valueOf(hours * PRICE_PER_HOUR);
+        }
+
+        // 接口功能：仅计算价格而不执行支付
+        if (params.getIs_challenge() == 1) {
+            return CommonResp.Data(price);
         }
 
         // 用户代金劵 (TODO)

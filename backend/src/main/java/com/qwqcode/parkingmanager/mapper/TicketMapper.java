@@ -1,6 +1,6 @@
 package com.qwqcode.parkingmanager.mapper;
 
-import com.qwqcode.parkingmanager.entity.Ticket;
+import com.qwqcode.parkingmanager.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -14,4 +14,7 @@ public interface TicketMapper {
 
     @Select("SELECT * FROM `tickets` WHERE `ticket_key` = #{ticket_key} LIMIT 1")
     Ticket findTicketByKey(@Param("ticket_key") String ticket_key);
+
+    @Select("SELECT * FROM `ticket_presets` WHERE `id` = #{id} LIMIT 1")
+    TicketPreset findTicketPresetByID(@Param("id") int id);
 }

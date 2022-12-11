@@ -60,7 +60,7 @@ ticket_presets:
   - id           # 小票预设 ID
   - cond         # 判断条件类型
   - cond_val     # 条件满足值
-  - act          # 执行操作类型 (monthly, discount, price-de)
+  - act          # 执行操作类型 (monthly, discount, price-de, hours-de)
   - act_val      # 执行操作值
   - is_available # 是否有效 (0 让所有使用该预设的小票失效，且无法使用该预设)
 

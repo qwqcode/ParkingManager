@@ -1,0 +1,134 @@
+.home-page {
+    background: #f4f4f4;
+    min-height: 100vh;
+    padding: 30px;
+
+    .card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 20px 30px;
+
+        &:not(:last-child) {
+            margin-bottom: 20px;
+        }
+    }
+
+    .user {
+        display: flex;
+        place-items: center;
+        flex-direction: row;
+
+        .avatar {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            background-image: url('data:image/png;base64,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');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-color: gray;
+        }
+
+        .user-info {
+            flex: 1;
+            margin-left: 30px;
+
+            .phone {
+                font-size: 30px;
+            }
+
+            .credit {
+
+            }
+
+            .credit-item {
+                font-size: 25px;
+                margin-right: 15px;
+
+                text {
+                    color: red;
+                }
+            }
+        }
+
+        .vip-type {
+            font-size: 26px;
+            margin-left: 20px;
+            margin: 0 10px;
+            background: #f4f4f4;
+            border-radius: 100px;
+            padding: 8px 25px;
+
+            &.gold {
+                color: #fff;
+                background: #ff8f00;
+            }
+        }
+
+        .login-need {
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            place-items: center;
+            justify-content: center;
+
+            .login-btn {
+                margin: 0 auto;
+                border-radius: 200px;
+                text-align: center;
+                padding: 12px 40px;
+                color: #fff;
+                background: rgb(25, 98, 233);
+            }
+        }
+    }
+
+    .cars {
+        .bind-card-notice {
+            padding: 20px;
+
+            .text {
+                text-align: center;
+                margin-bottom: 30px;
+                font-size: 28px;
+            }
+        }
+
+        .car-add-btn {
+            max-width: 350px;
+            margin: 0 auto;
+            border-radius: 200px;
+            text-align: center;
+            padding: 15px 30px;
+            color: #fff;
+            background: rgb(25, 98, 233);
+        }
+    }
+
+    .funcs {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 20px 10px;
+
+        .func-item {
+            display: flex;
+            flex-direction: column;
+            flex-basis: 25%;
+            place-items: center;
+            padding: 0 20px 10px 20px;
+
+            .func-icon {
+                height: 100px;
+                width: 100px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+            }
+
+            .func-name {
+                text-align: center;
+                font-size: 25px;
+            }
+        }
+    }
+}
