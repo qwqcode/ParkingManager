@@ -6,6 +6,7 @@ export default {
     'pages/index/index',
 
     'pages/user/car-add',
+    'pages/user/car-query',
     'pages/user/cars',
     'pages/user/recs',
     'pages/user/pay',

@@ -24,3 +24,8 @@ export function getDateFormatted(d: Date|string) {
     //YYYY-MM-DD hh:mm:ss
     return year+"-"+month+"-"+day+" "+hour+":"+min+":"+sec
 }
+
+export function getTime2HourMin(minutes: number) {
+    if (minutes < 60) return `${minutes} 分钟`
+    return `${Math.floor(minutes/60)} 小时 ${(minutes%60)} 分钟`
+}

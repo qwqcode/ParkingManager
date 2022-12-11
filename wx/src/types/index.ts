@@ -44,3 +44,26 @@ export interface ICar {
     updated_at: string
     recs?: IRec[]
 }
+
+export interface ITicketPreset {
+    id: number
+    act: string
+    act_val: string
+    act_label: string
+    cond: string
+    cond_val: string
+    is_available: number
+    created_at: string
+    updated_at: string
+}
+
+export interface ITicket {
+    id: number
+    is_available: number
+    ticket_key: string
+    park_id: number
+    preset_id: number
+    preset: ITicketPreset
+    created_at: string
+    updated_at: string
+}

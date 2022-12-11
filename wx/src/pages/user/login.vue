@@ -52,12 +52,12 @@ function login() {
         user.setData(data.user)
         user.setVipCard(data.vip_card)
 
-        // Taro.redirectTo({
-        //     url: '/pages/index/index'
-        // })
         Taro.redirectTo({
-            url: '/pages/user/pay'
+            url: '/pages/index/index'
         })
+        // Taro.redirectTo({
+        //     url: '/pages/user/pay'
+        // })
     })
 }
 

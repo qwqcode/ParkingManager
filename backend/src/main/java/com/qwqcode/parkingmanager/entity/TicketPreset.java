@@ -1,6 +1,7 @@
 package com.qwqcode.parkingmanager.entity;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class TicketPreset {
     private int id;
@@ -48,6 +49,16 @@ public class TicketPreset {
 
     public String getAct_val() {
         return act_val;
+    }
+
+    public String getAct_label() {
+        final HashMap<String, String> dict = new HashMap<>();
+        dict.put("monthly", "月卡抵扣");
+        dict.put("discount", "折扣");
+        dict.put("price-de", "金额抵扣");
+        dict.put("hours-de", "小时抵扣");
+
+        return dict.get(this.getAct());
     }
 
     public void setAct_val(String act_val) {

@@ -4,6 +4,7 @@ import com.qwqcode.parkingmanager.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 @Mapper
@@ -17,4 +18,7 @@ public interface TicketMapper {
 
     @Select("SELECT * FROM `ticket_presets` WHERE `id` = #{id} LIMIT 1")
     TicketPreset findTicketPresetByID(@Param("id") int id);
+
+    @Update("UPDATE `tickets` SET `is_available` = #{available} WHERE `id` = #{id}")
+    int updateTicketAvailable(@Param("id") int id, @Param("available") int available);
 }

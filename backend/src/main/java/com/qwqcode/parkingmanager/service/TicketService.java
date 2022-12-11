@@ -22,4 +22,8 @@ public class TicketService {
     public TicketPreset findTicketPresetByID(int id) {
         return ticketMapper.findTicketPresetByID(id);
     }
+
+    public boolean updateTicketAvailable(int id, boolean available) {
+        return ticketMapper.updateTicketAvailable(id, available ? 1 : 0) != 0;
+    }
 }

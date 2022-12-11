@@ -4,7 +4,7 @@ import com.qwqcode.parkingmanager.entity.Rec;
 
 import java.util.List;
 
-public class CarRecsResp {
+public class UserCarRecsResp {
     private List<Rec> recs;
     private int total;
 

@@ -57,6 +57,7 @@ export async function request(path: string, method: 'GET'|'POST', data: any = {}
         mask: false // 是否显示透明蒙层，防止触摸穿透
       })
     }, 0)
+    throw resData
   }
 
   return resData.data

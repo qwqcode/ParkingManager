@@ -174,7 +174,7 @@ public class UserController {
         // 查询停车记录
         car.setRecs(recService.findCarRecs(car.getId()));
 
-        CarQueryResp resp = new CarQueryResp();
+        UserCarQueryResp resp = new UserCarQueryResp();
         resp.setCar(car);
 
         return CommonResp.Data(resp);
@@ -188,9 +188,32 @@ public class UserController {
         List<Rec> recList = recService.findCarRecsPagination(params.getCar_id(), params.getOffset(), params.getLimit());
         int total = recService.countCarRecs(params.getCar_id());
 
-        CarRecsResp resp = new CarRecsResp();
+        UserCarRecsResp resp = new UserCarRecsResp();
         resp.setRecs(recList);
         resp.setTotal(total);
+
+        return CommonResp.Data(resp);
+    }
+
+    /**
+     * 小票查询
+     */
+    @PostMapping("/api/user/ticket-query")
+    public CommonResp ticketCheck(UserTicketQueryParams params) {
+        Ticket ticket = ticketService.findTicketByKey(params.getTicket_key());
+        if (ticket == null || ticket.getIs_available() == 0) {
+            return CommonResp.Error("小票无效");
+        }
+
+        // 查询小票预设
+        TicketPreset tPreset = ticketService.findTicketPresetByID(ticket.getPreset_id());
+        if (tPreset == null || tPreset.getIs_available() == 0) {
+            return CommonResp.Error("小票预设无效");
+        }
+
+        UserTicketQueryResp resp = new UserTicketQueryResp();
+        resp.setTicket(ticket);
+        resp.setPreset(tPreset);
 
         return CommonResp.Data(resp);
     }
@@ -203,6 +226,9 @@ public class UserController {
         Rec rec = recService.findRecByID(params.getRec_id());
         if (rec == null) {
             return CommonResp.Error("找不到停车记录");
+        }
+        if (rec.getRec_pay_id() != 0) {
+            return CommonResp.Error("费用已缴清，无需重复付费");
         }
 
         // 计算需支付金额
@@ -257,6 +283,13 @@ public class UserController {
 
         if (!recService.createRecPay(pay)) {
             return CommonResp.Error("支付失败");
+        }
+
+        // 将小票设置为无效
+        if (use_ticket_id != 0) {
+            if (!ticketService.updateTicketAvailable(use_ticket_id, false)) {
+                return CommonResp.Error("小票作废失败");
+            }
         }
 
         if (recService.updateRecPayID(rec, pay)) {

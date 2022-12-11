@@ -1,11 +1,8 @@
 package com.qwqcode.parkingmanager.model.res;
 
 import com.qwqcode.parkingmanager.entity.Car;
-import com.qwqcode.parkingmanager.entity.Rec;
 
-import java.util.List;
-
-public class CarQueryResp {
+public class UserCarQueryResp {
     private Car car;
 
     public Car getCar() {

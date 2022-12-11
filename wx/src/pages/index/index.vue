@@ -15,20 +15,20 @@
 
     <view class="card cars">
       <view class="cars-desc">
-        您已绑定共 {{ user.cars.length }} 辆车
+        您已绑定共 {{ user.cars.length }} 辆车<text class="link">管理 ></text>
       </view>
 
-      <view v-for="(car) in user.cars" :key="car.id" class="car-item">
+      <view v-for="(car) in user.cars" :key="car.id" class="car-item" @tap="openCarPage(car.plate)">
         <view class="car-plate">{{ car.plate }}</view>
         <view class="car-status">
-          <text v-if="countCarRecsUnpaid(car) > 0" class="badge red">待支付 {{countCarRecsUnpaid(car)}}</text>
-          <text v-else class="badge">无待支付</text>
+          <text v-if="countCarRecsUnpaid(car) > 0" class="badge red">待缴纳 {{countCarRecsUnpaid(car)}}</text>
+          <text v-else class="badge">已缴清</text>
         </view>
         <template v-if="car.recs && car.recs.length > 0">
         <view v-for="(rec) in [car.recs[0]]" :key="rec.id" class="details">
           <view>入场：{{utils.getDateFormatted(rec.in_at)}}</view>
-          <view>时长：{{Math.ceil(rec.parking_time / 60)}} 小时</view>
           <view>出场：{{utils.getDateFormatted(rec.out_at)}}</view>
+          <view>时长：{{utils.getTime2HourMin(rec.parking_time)}}</view>
           <view>状态：{{ rec.status_text }}</view>
         </view>
         </template>
@@ -90,6 +90,12 @@ function linkToCarAdd() {
 
 function countCarRecsUnpaid(car: t.ICar) {
   return car.recs?.filter(r => r.rec_pay_id == 0).length || 0
+}
+
+function openCarPage(car_plate: string) {
+  Taro.navigateTo({
+    url: '/pages/user/car-query?car_plate='+car_plate
+  })
 }
 
 const funcList = [{
