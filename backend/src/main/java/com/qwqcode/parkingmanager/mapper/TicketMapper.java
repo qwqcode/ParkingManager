@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface TicketMapper {
@@ -21,4 +23,10 @@ public interface TicketMapper {
 
     @Update("UPDATE `tickets` SET `is_available` = #{available} WHERE `id` = #{id}")
     int updateTicketAvailable(@Param("id") int id, @Param("available") int available);
+
+    @Select("SELECT * FROM `tickets`")
+    List<Ticket> findAllTickets();
+
+    @Select("SELECT * FROM `ticket_presets`")
+    List<TicketPreset> findAllTicketPresets();
 }

@@ -27,7 +27,10 @@ public interface RecMapper {
     @Select("SELECT * FROM `recs` WHERE `car_id` = #{car_id} AND `out_at` IS NULL ORDER BY `created_at` DESC LIMIT 1")
     Rec findLatestRecByCarID(@Param("car_id") int car_id);
 
-    @Select("SELECT * FROM `recs` ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
+    @Select("SELECT r.*, c.plate AS 'car_plate' " +
+            "FROM `recs` AS r " +
+            "LEFT JOIN `cars` AS c ON c.id = r.car_id " +
+            "ORDER BY `created_at` DESC LIMIT #{offset},#{limit}")
     List<Rec> findAllRecs(@Param("offset") int offset, @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) FROM `recs`")
@@ -49,4 +52,7 @@ public interface RecMapper {
             "VALUES (#{p.car_id}, #{p.rec_id}, #{p.park_id}, #{p.price}, #{p.use_ticket_id}, #{p.use_coupon_id}, #{p.is_use_vip_card})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int createRecPay(@Param("p") RecPay rec_pay);
+
+    @Select("SELECT * FROM `rec_pays` ORDER BY `created_at` DESC")
+    List<RecPay> findAllRecPays();
 }

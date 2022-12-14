@@ -1,8 +1,8 @@
 package com.qwqcode.parkingmanager.model.req;
 
 public class AdminRecParams {
-    private int offset;
-    private int limit;
+    private int offset = 0;
+    private int limit = 15;
 
     public int getOffset() {
         return offset;

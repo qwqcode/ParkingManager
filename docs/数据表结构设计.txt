@@ -58,6 +58,7 @@ tickets:
 # 7、小票预设
 ticket_presets:
   - id           # 小票预设 ID
+  - title        # 小票预设名称
   - cond         # 判断条件类型
   - cond_val     # 条件满足值
   - act          # 执行操作类型 (monthly, discount, price-de, hours-de)

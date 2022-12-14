@@ -9,6 +9,7 @@ import com.qwqcode.parkingmanager.model.req.CarOutParams;
 import com.qwqcode.parkingmanager.model.res.CommonResp;
 import com.qwqcode.parkingmanager.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 仅内网可访问的接口
  */
 @RestController
+@CrossOrigin
 public class InternalController {
     @Autowired
     private RecService recService;

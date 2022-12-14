@@ -71,4 +71,9 @@ public class RecService {
     public boolean createRecPay(RecPay pay) {
         return recMapper.createRecPay(pay) != 0;
     }
+
+    /** 获取停车记录列表（无分页）*/
+    public List<RecPay> findAllRecPays() {
+        return recMapper.findAllRecPays();
+    }
 }

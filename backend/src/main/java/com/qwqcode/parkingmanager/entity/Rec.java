@@ -1,14 +1,21 @@
 package com.qwqcode.parkingmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qwqcode.parkingmanager.common.Utils;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Rec {
     private int id;
     private int car_id;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String car_plate;
+
     private int park_id;
     private Date in_at;
     private Date out_at;
@@ -33,6 +40,14 @@ public class Rec {
 
     public void setCar_id(int car_id) {
         this.car_id = car_id;
+    }
+
+    public String getCar_plate() {
+        return car_plate;
+    }
+
+    public void setCar_plate(String car_plate) {
+        this.car_plate = car_plate;
     }
 
     public int getPark_id() {
@@ -97,6 +112,10 @@ public class Rec {
         return minutes;
     }
 
+    public String getParking_time_text() {
+        return Utils.getTime2HourMin(this.getParking_time());
+    }
+
     // 获取停车费用
     public BigDecimal getParking_price() {
         return getParking_price(0);
@@ -127,5 +146,13 @@ public class Rec {
      */
     public String getStatus_text() {
         return (out_at == null ? "停泊中" : "已出场") + " " + (rec_pay_id == 0 ? "(未缴费)" : "(已缴费)");
+    }
+
+    public String getIn_at_formatted() {
+        return Utils.getDateFormatted(this.in_at);
+    }
+
+    public String getOut_at_formatted() {
+        return Utils.getDateFormatted(this.out_at);
     }
 }

@@ -6,6 +6,8 @@ import com.qwqcode.parkingmanager.mapper.TicketMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TicketService {
     @Autowired
@@ -25,5 +27,13 @@ public class TicketService {
 
     public boolean updateTicketAvailable(int id, boolean available) {
         return ticketMapper.updateTicketAvailable(id, available ? 1 : 0) != 0;
+    }
+
+    public List<Ticket> findAllTickets() {
+        return ticketMapper.findAllTickets();
+    }
+
+    public List<TicketPreset> findAllTicketPresets() {
+        return ticketMapper.findAllTicketPresets();
     }
 }
