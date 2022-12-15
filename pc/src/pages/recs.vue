@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '../stores/app'
 import * as request from '@/lib/request'
-import { PaginationProps, TableColumnData } from '@arco-design/web-vue';
+import { Message, PaginationProps, TableColumnData } from '@arco-design/web-vue';
 
 const app = useAppStore()
 const PAGE_SIZE = 15
@@ -78,13 +78,48 @@ const columns: TableColumnData[] = [
 
 const data = ref([])
 
+function refresh() {
+  pagination.current = 1
+  fetch(0)
+}
+
 const form = reactive({
     edit_id: null,
     car_plate: '浙A 12345',
+    car_plate_type: '蓝色'
 })
 
 function submitAddRec() {
+  if (form.car_plate.trim() == '' || form.car_plate.length < 7) {
+    Message.warning("请输入完整车牌号")
+    return
+  }
 
+  request.post('/internal/car-in', {
+    car_plate: form.car_plate,
+    car_plate_type: form.car_plate_type,
+    park_id: 1
+  }).then(res => {
+    if (res.data.success) {
+      Message.success("模拟停车成功")
+      refresh()
+    } else {
+      Message.error(res.data.msg)
+    }
+  })
+}
+
+function setCarOut(car_plate: string) {
+  request.post('/internal/car-out', {
+    car_plate
+  }).then(res => {
+    if (res.data.success) {
+      Message.success("模拟出场成功")
+      refresh()
+    } else {
+      Message.error(res.data.msg)
+    }
+  })
 }
 </script>
 
@@ -92,14 +127,21 @@ function submitAddRec() {
     <div class="recs-page">
         <a-card title="模拟停车" style="margin-bottom: 10px;">
             <a-form :model="form" layout="inline" @submit="submitAddRec">
-                <a-form-item field="name" label="车牌号">
+                <a-form-item label="车牌号">
                     <a-input v-model="form.car_plate" placeholder="例如，京A 777777" />
                 </a-form-item>
-                <a-form-item field="name" label="停车场 ID">
+                <a-form-item label="车牌类型">
+                    <a-select v-model="form.car_plate_type" placeholder="请选择...">
+                        <a-option value="蓝色">蓝色</a-option>
+                        <a-option value="黑色">黑色</a-option>
+                        <a-option value="黄色">黄色</a-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="停车场 ID">
                     <a-input default-value="1" :disabled="true" style="width: 5em" />
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary">
+                    <a-button type="primary" html-type="submit">
                         <template #icon>
                             <IconArrowRight />
                         </template>
@@ -114,7 +156,7 @@ function submitAddRec() {
                 {{record.parking_price}} 元
             </template>
             <template #optional="{ record }">
-                <a-button v-if="!record.out_at" @click="$modal.info({ title:'Name', content: '' })">模拟出场</a-button>
+                <a-button :disabled="!!record.out_at" @click="setCarOut(record.car_plate)">出场</a-button>
             </template>
         </a-table>
     </div>
