@@ -36,4 +36,16 @@ public class TicketService {
     public List<TicketPreset> findAllTicketPresets() {
         return ticketMapper.findAllTicketPresets();
     }
+
+    public boolean createTicketPreset(TicketPreset preset) {
+        return ticketMapper.createTicketPreset(preset) != 0;
+    }
+
+    public boolean createTicket(Ticket ticket) {
+        return ticketMapper.createTicket(ticket) != 0;
+    }
+
+    public boolean delTicket(int ticket_id) {
+        return ticketMapper.delTicket(ticket_id) != 0;
+    }
 }

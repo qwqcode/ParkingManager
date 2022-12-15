@@ -4,6 +4,7 @@ import com.qwqcode.parkingmanager.model.req.*;
 import com.qwqcode.parkingmanager.model.res.*;
 import com.qwqcode.parkingmanager.service.*;
 import com.qwqcode.parkingmanager.entity.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,5 +68,32 @@ public class AdminController {
         List<TicketPreset> presets = ticketService.findAllTicketPresets();
 
         return CommonResp.Data(presets);
+    }
+
+    @PostMapping("/api/admin/ticket-preset-create")
+    public CommonResp adminTicketPresetCreate(TicketPreset preset) {
+        if (ticketService.createTicketPreset(preset)) {
+            return CommonResp.Data(preset);
+        } else {
+            return CommonResp.Error("小票模板创建失败");
+        }
+    }
+
+    @PostMapping("/api/admin/ticket-create")
+    public CommonResp adminTicketCreate(Ticket ticket) {
+        if (ticketService.createTicket(ticket)) {
+            return CommonResp.Data(ticket);
+        } else {
+            return CommonResp.Error("小票创建失败");
+        }
+    }
+
+    @PostMapping("/api/admin/ticket-del")
+    public CommonResp adminTicketDel(Ticket ticket) {
+        if (ticketService.delTicket(ticket.getId())) {
+            return CommonResp.Success("小票删除成功");
+        } else {
+            return CommonResp.Error("小票删除失败");
+        }
     }
 }

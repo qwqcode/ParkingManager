@@ -26,6 +26,8 @@ public class Rec {
 
     private int rec_pay_id;
 
+    private Date rec_pay_at;
+
     public int getId() {
         return id;
     }
@@ -96,6 +98,14 @@ public class Rec {
 
     public void setRec_pay_id(int rec_pay_id) {
         this.rec_pay_id = rec_pay_id;
+    }
+
+    public Date getRec_pay_at() {
+        return rec_pay_at;
+    }
+
+    public void setRec_pay_at(Date rec_pay_at) {
+        this.rec_pay_at = rec_pay_at;
     }
 
     // 获取停车时长（分钟）

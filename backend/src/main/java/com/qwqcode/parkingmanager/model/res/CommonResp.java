@@ -4,8 +4,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.lang.Nullable;
 
 public class CommonResp {
-    public static CommonResp Success(String msg) {
+    public static CommonResp Success() {
         return new CommonResp(true);
+    }
+
+
+    public static CommonResp Success(String msg) {
+        return new CommonResp(true, msg);
+    }
+
+    public static CommonResp Error() {
+        return new CommonResp(false);
     }
 
     public static CommonResp Error(String msg) {

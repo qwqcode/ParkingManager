@@ -136,6 +136,32 @@ public class UserController {
     }
 
     /**
+     * 车辆解绑
+     */
+    @PostMapping("/api/user/unbind-car")
+    public CommonResp unbindCar(HttpServletRequest req, UserUnbindCarParams params) {
+        int userID = ((User)req.getSession().getAttribute("user")).getId();
+
+        // 查询车辆
+        Car car = carService.findCarByID(params.getCar_id());
+        if (car == null) {
+            return CommonResp.Error("未找到车辆信息");
+        }
+
+        // 是否为用户已绑定车辆
+        if (car.getUser_id() != userID) {
+            return CommonResp.Error("用户未绑定该车辆");
+        }
+
+        // 解绑车辆
+        if (carService.editCarUserID(car.getId(), 0)) {
+            return CommonResp.Success("解绑成功");
+        } else {
+            return CommonResp.Error("解绑失败");
+        }
+    }
+
+    /**
      * 用户车辆查询
      */
     @PostMapping("/api/user/cars")
@@ -224,6 +250,8 @@ public class UserController {
      */
     @PostMapping("/api/user/rec-pay")
     public CommonResp recPay(HttpServletRequest req, UserRecPayParams params) {
+        int userID = ((User)req.getSession().getAttribute("user")).getId();
+
         Rec rec = recService.findRecByID(params.getRec_id());
         if (rec == null) {
             return CommonResp.Error("找不到停车记录");
@@ -277,6 +305,7 @@ public class UserController {
         pay.setCar_id(rec.getCar_id());
         pay.setRec_id(rec.getId());
         pay.setPark_id(rec.getPark_id());
+        pay.setUser_id(userID);
         pay.setPrice(price);
         pay.setUse_ticket_id(use_ticket_id);
         pay.setUse_coupon_id(use_coupon_id);

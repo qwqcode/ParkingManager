@@ -35,6 +35,10 @@ const columns: TableColumnData[] = [
     dataIndex: "park_id",
   },
   {
+    title: "用户 ID",
+    dataIndex: "user_id",
+  },
+  {
     title: "已付费用",
     dataIndex: "price",
   },

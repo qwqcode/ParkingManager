@@ -10,6 +10,8 @@ export default {
     'pages/user/cars',
     'pages/user/recs',
     'pages/user/pay',
+    'pages/user/pay-done',
+    'pages/user/rules'
   ],
   window: {
     backgroundTextStyle: 'light',

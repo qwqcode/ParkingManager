@@ -41,7 +41,7 @@ const formData = reactive({
 })
 
 onMounted(() => {
-    login()
+    // login()
 })
 
 function login() {
@@ -55,9 +55,6 @@ function login() {
         Taro.redirectTo({
             url: '/pages/index/index'
         })
-        // Taro.redirectTo({
-        //     url: '/pages/user/pay'
-        // })
     })
 }
 

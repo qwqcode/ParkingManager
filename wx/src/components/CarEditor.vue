@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import Taro from '@tarojs/taro'
 import { reactive, defineEmits } from 'vue'
+import * as utils from '@/lib/utils'
 
 interface ICarEditorData {
     plate: string
@@ -53,6 +54,9 @@ function onSubmit() {
         })
         return
     }
+
+    // 格式化车牌
+    car.plate = utils.fmtCarPlate(car.plate)
 
     emits('submit', car)
 }

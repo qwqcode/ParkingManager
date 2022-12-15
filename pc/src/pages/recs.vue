@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '../stores/app'
 import * as request from '@/lib/request'
+import * as utils from '@/lib/utils'
 import { Message, PaginationProps, TableColumnData } from '@arco-design/web-vue';
 
 const app = useAppStore()
@@ -95,12 +96,15 @@ function submitAddRec() {
     return
   }
 
+  form.car_plate = utils.fmtCarPlate(form.car_plate)
+
   request.post('/internal/car-in', {
     car_plate: form.car_plate,
     car_plate_type: form.car_plate_type,
     park_id: 1
   }).then(res => {
     if (res.data.success) {
+      form.car_plate = ''
       Message.success("模拟停车成功")
       refresh()
     } else {

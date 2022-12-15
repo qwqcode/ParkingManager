@@ -123,14 +123,18 @@ function _submitPay() {
         ticket_key: ticket.value?.ticket_key || '',
         is_challenge: 0,
     }).then(d => {
-        Taro.navigateBack()
-        setTimeout(() => {
-            Taro.showToast({
-                title: '缴费成功',
-                icon: 'none',
-                duration: 2000
-            })
-        }, 80)
+        // Taro.navigateBack()
+        // setTimeout(() => {
+        //     Taro.showToast({
+        //         title: '缴费成功',
+        //         icon: 'none',
+        //         duration: 2000
+        //     })
+        // }, 80)
+
+        Taro.redirectTo({
+            url: '/pages/user/pay-done?show_countdown=' + (!rec.value?.out_at ? 1 : 0)
+        })
     })
 }
 </script>

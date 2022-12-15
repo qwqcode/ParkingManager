@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Utils {
     public static Date getNowDate() {
@@ -17,7 +18,7 @@ public class Utils {
 
     public static String getDateFormatted(Date date) {
         if (date == null) return "";
-        DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateTimeFormat.format(date);
     }
 

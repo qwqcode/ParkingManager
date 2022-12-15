@@ -29,3 +29,16 @@ export function getTime2HourMin(minutes: number) {
     if (minutes < 60) return `${minutes} 分钟`
     return `${Math.floor(minutes/60)} 小时 ${(minutes%60)} 分钟`
 }
+
+export function getTime2MinSec(seconds: number) {
+    if (seconds < 60) return `${seconds} 秒`
+    return `${Math.floor(seconds/60)} 分钟 ${(Math.floor(seconds%60))} 秒`
+}
+
+export function fmtCarPlate(car_plate: string) {
+    let plateFmt = car_plate.trim()
+    if (plateFmt.length > 2 && plateFmt.charAt(2) !== ' ') {
+        plateFmt = plateFmt.slice(0, 2) + ' ' + plateFmt.slice(2)
+    }
+    return plateFmt
+}

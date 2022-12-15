@@ -30,6 +30,7 @@ export interface IRec {
     parking_price: number
     parking_time: number
     rec_pay_id: number
+    rec_pay_at: string
     created_at: string
     updated_at: string
     status_text: string

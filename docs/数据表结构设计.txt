@@ -35,6 +35,7 @@ recs:
   - in_at      # 驶入停车场时间
   - out_at     # 驶出停车场时间
   - rec_pay_id # 缴费记录 ID (0=未缴费)
+  - rec_pay_at # 缴费时间
 
 # 5、停车缴费记录
 rec_pays:
@@ -42,6 +43,7 @@ rec_pays:
   - car_id          # 车辆 ID
   - rec_id          # 停车记录 ID
   - park_id         # 停车场 ID
+  - user_id         # 用户 ID
   - price           # 缴费金额
   - use_ticket_id   # 使用的小票 ID
   - use_coupon_id   # 使用优惠券 ID

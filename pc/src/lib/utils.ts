@@ -7,3 +7,11 @@ export function randomStr(length: number) {
     }
     return result
 }
+
+export function fmtCarPlate(car_plate: string) {
+    let plateFmt = car_plate.trim()
+    if (plateFmt.length > 2 && plateFmt.charAt(2) !== ' ') {
+        plateFmt = plateFmt.slice(0, 2) + ' ' + plateFmt.slice(2)
+    }
+    return plateFmt
+}

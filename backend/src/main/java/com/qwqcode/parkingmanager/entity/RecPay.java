@@ -8,6 +8,8 @@ public class RecPay {
     private int car_id;
     private int rec_id;
     private int park_id;
+
+    private int user_id;
     private BigDecimal price;
     private int use_ticket_id;
     private int use_coupon_id;
@@ -47,6 +49,14 @@ public class RecPay {
 
     public void setPark_id(int park_id) {
         this.park_id = park_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public BigDecimal getPrice() {

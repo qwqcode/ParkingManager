@@ -15,24 +15,10 @@
 
     <view class="card cars">
       <view class="cars-desc">
-        您已绑定共 {{ user.cars.length }} 辆车<text class="link">管理 ></text>
+        您已绑定共 {{ user.cars.length }} 辆车<text class="link" @tap="linkToCars()">管理 ></text>
       </view>
 
-      <view v-for="(car) in user.cars" :key="car.id" class="car-item" @tap="openCarPage(car.plate)">
-        <view class="car-plate">{{ car.plate }}</view>
-        <view class="car-status">
-          <text v-if="countCarRecsUnpaid(car) > 0" class="badge red">待缴纳 {{countCarRecsUnpaid(car)}}</text>
-          <text v-else class="badge">已缴清</text>
-        </view>
-        <template v-if="car.recs && car.recs.length > 0">
-        <view v-for="(rec) in [car.recs[0]]" :key="rec.id" class="details">
-          <view>入场：{{utils.getDateFormatted(rec.in_at)}}</view>
-          <view>出场：{{utils.getDateFormatted(rec.out_at)}}</view>
-          <view>时长：{{utils.getTime2HourMin(rec.parking_time)}}</view>
-          <view>状态：{{ rec.status_text }}</view>
-        </view>
-        </template>
-      </view>
+      <CarList />
 
       <view class="bind-card-notice">
         <view class="car-add-btn" @tap="linkToCarAdd()">+ 添加车辆</view>
@@ -46,6 +32,7 @@
         v-for="(item, i) in funcList"
         :key="i"
         class="func-item"
+        @tap="item.link ? linkTo(item.link) : null"
       >
         <view class="func-icon" :style="{ backgroundImage: `url(${item.icon})` }"></view>
         <view class="func-name">{{ item.name }}</view>
@@ -59,9 +46,8 @@ import './index.scss'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { onBeforeMount } from 'vue'
 import { useUserStore } from '@/stores/user'
+import CarList from '@/components/CarList.vue'
 import * as request from '@/lib/request'
-import * as utils from '@/lib/utils'
-import type * as t from '@/types'
 
 const user = useUserStore()
 
@@ -88,28 +74,34 @@ function linkToCarAdd() {
   })
 }
 
-function countCarRecsUnpaid(car: t.ICar) {
-  return car.recs?.filter(r => r.rec_pay_id == 0).length || 0
-}
-
-function openCarPage(car_plate: string) {
+function linkToCars() {
   Taro.navigateTo({
-    url: '/pages/user/car-query?car_plate='+car_plate
+    url: '/pages/user/cars'
   })
 }
 
-const funcList = [{
+function linkTo(link: string) {
+  Taro.navigateTo({
+    url: link
+  })
+}
+
+const funcList: {name: string, icon: string, link?: string}[] = [{
   name: '缴费记录',
-  icon: require('@/static/icons/recs.png')
+  icon: require('@/static/icons/recs.png'),
+  link: '/pages/user/recs'
 }, {
   name: '车牌管理',
-  icon: require('@/static/icons/cars.png')
+  icon: require('@/static/icons/cars.png'),
+  link: '/pages/user/cars'
 }, {
   name: '代人缴费',
-  icon: require('@/static/icons/pay.png')
+  icon: require('@/static/icons/pay.png'),
+  link: '/pages/user/car-query'
 }, {
   name: '收费规则',
-  icon: require('@/static/icons/rule.png')
+  icon: require('@/static/icons/rule.png'),
+  link: '/pages/user/rules'
 }, {
   name: '停车券',
   icon: require('@/static/icons/coupons.png')
