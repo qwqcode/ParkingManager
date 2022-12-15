@@ -15,7 +15,7 @@ const app = useAppStore()
     <a-layout>
       <a-layout>
 
-        <a-layout-sider collapsible breakpoint="xl">
+        <a-layout-sider breakpoint="xl">
           <div class="menu-wrapper">
             <Menu />
           </div>
@@ -58,7 +58,9 @@ const app = useAppStore()
 }
 
 .menu-wrapper {
+  position: fixed;
   height: 100%;
+  width: 200px;
   overflow: auto;
   overflow-x: hidden;
 
